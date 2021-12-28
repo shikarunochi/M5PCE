@@ -1,0 +1,13 @@
+{
+    "files.associations": {
+        "STARTUP.C": "cpp",
+        "PCE.C": "cpp",
+        "PC98.C": "cpp",
+        "M6502.H": "cpp",
+        "M6502.C": "cpp",
+        "KEYBOARD.C": "cpp",
+        "DEBUG.C": "cpp",
+        "typeinfo": "cpp",
+        "string": "cpp"
+    }
+}
