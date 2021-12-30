@@ -144,7 +144,45 @@ String pceSelect(){
       }
       needRedraw = true;
     }
+    
+    if(digitalRead(GAMEBOY_INT_PIN) == LOW) {
+      Wire.requestFrom(GAMEBOY_I2C_ADDRESS, (uint8_t)1);
+      if(Wire.available()) {
+        // Receive one byte as character
+        uint8_t key_val = Wire.read();
+        //Serial.printf("%x\n",key_val);
+        switch(key_val){
+          case GAMEBOY_KEY_UP:
+            selectIndex--;
+            if (selectIndex < 0)
+            {
+              selectIndex = fileListCount -1;
+            }
+            needRedraw = true;
+            break;
+          case GAMEBOY_KEY_DOWN:
+            selectIndex++;
+            if (selectIndex >= fileListCount)
+            {
+              selectIndex = 0;
+            }
+            needRedraw = true;
+            break;
+          case GAMEBOY_KEY_START:
+          case GAMEBOY_KEY_SELECT:
+          case GAMEBOY_KEY_A:
+          case GAMEBOY_KEY_B:      
+            String fileName = fileList[selectIndex];
+            String ext = fileName.substring(fileName.lastIndexOf(".") + 1);
+            ext.toUpperCase();
+            Serial.print("select:");
+            Serial.println(fileName);
+            delay(10);
+            M5.Lcd.fillScreen(TFT_BLACK);
+            return "/pceROM/" + fileName;
+        }
+      }
+    }
     delay(100);
   }
-
 }

@@ -12,6 +12,8 @@ void setup() {
      updateFromFS(SD);
      ESP.restart();
   }
+  pinMode(GAMEBOY_INT_PIN, INPUT_PULLUP);
+  
 //  emuMain();
   String strFileName = pceSelect();
   if(strFileName.length() > 0){

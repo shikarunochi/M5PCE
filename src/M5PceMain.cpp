@@ -70,9 +70,13 @@ void TrashMachine(void){
 #define	JOY_RIGHT	0x20
 
 #define JOYSTICK_ADDR 0x52
+
 int Joysticks(void){
-	int JS = 0;
+	
 	M5.update();
+	
+	int JS = 0;
+	
 	if(M5.BtnA.wasReleased()){
 		JS = JS | JOY_START;
 	}
@@ -114,6 +118,52 @@ int Joysticks(void){
 			JS = JS | JOY_SELECT;
 		}
 	}
+	if(JS > 0){ //Faces GameBoy 以外の入力があればそれを返す
+		return JS;
+	}
+  	//if(digitalRead(pin_int_face) == LOW) {//状態変化の割り込みが無くても、現在の状態をチェック
+		// If yes, request 1 byte from the panel
+		Wire.requestFrom(GAMEBOY_I2C_ADDRESS, (uint8_t)1);
+
+		// Check if data on the I2C is available
+		if(Wire.available()) {
+			// Receive one byte as character
+			uint8_t key_val = Wire.read();
+			if(key_val != 0x00) {
+				if(key_val == 0xff){
+					return 0;
+				}
+				//Serial.printf("%x\n",key_val);
+				//押された箇所のビットが 0 になります
+				if((key_val & ~GAMEBOY_KEY_SELECT & 0xFF) == 0){
+					JS = JS | JOY_SELECT;
+				}  
+				//if((key_val & 0x80) == 0){
+				if((key_val & ~GAMEBOY_KEY_START & 0xFF) == 0){
+					JS = JS | JOY_START;
+				}  
+				if((key_val & ~GAMEBOY_KEY_A & 0xFF) == 0){
+					JS = JS | JOY_A;
+				}  
+				if((key_val & ~GAMEBOY_KEY_B & 0xFF) == 0){
+					JS = JS | JOY_B;
+				}  
+				if((key_val & ~GAMEBOY_KEY_UP & 0xFF) == 0){
+					JS = JS | JOY_UP;
+				}  
+				if((key_val & ~GAMEBOY_KEY_DOWN & 0xFF) == 0){
+					JS = JS | JOY_DOWN;
+				}  
+				if((key_val & ~GAMEBOY_KEY_LEFT & 0xFF) == 0){
+					JS = JS | JOY_LEFT;
+				}  
+				if((key_val & ~GAMEBOY_KEY_RIGHT & 0xFF) == 0){
+					JS = JS | JOY_RIGHT;
+				}  
+			}
+		}
+	//}
+
 	return JS;
 }
 
