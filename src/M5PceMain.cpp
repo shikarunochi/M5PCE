@@ -1,9 +1,16 @@
 //    PC Engine emulator M5PCE for M5Stack by @shikarunochi 2021.12-
+#ifdef XIAO_GC9107
+#include<M5GFX.h>
+#include "XIAO_GC9107.h"
+#elif defined XIAO_ST7789
+#include "XIAO_ST7789.h"
+#else
 #include <M5Stack.h>
 #define LGFX_M5STACK    
 #define LGFX_USE_V1 
 #include <LovyanGFX.hpp>
 #include <LGFX_AUTODETECT.hpp>  
+#endif
 #include "M5pce.h"
 #include "pce.h"
 
@@ -44,7 +51,9 @@ BOOL InitMachine(void){
     lcd.setSwapBytes(true); // バイト順変換を有効にする。
 	lcd.setColorDepth(8);
     lcd.fillScreen(TFT_BLACK);
-
+#ifdef ARDUINO_XIAO_ESP32S3
+	//lcd.setRotation(2);
+#endif
 	sprite.setColorDepth(8);
 	sprite.setSwapBytes(true);
 	sprite.createSprite(WIDTH, HEIGHT); 
@@ -72,10 +81,10 @@ void TrashMachine(void){
 #define JOYSTICK_ADDR 0x52
 
 int Joysticks(void){
-	
-	M5.update();
-	
 	int JS = 0;
+#ifdef ARDUINO_XIAO_ESP32S3
+#else
+	M5.update();
 	
 	if(M5.BtnA.wasReleased()){
 		JS = JS | JOY_START;
@@ -163,7 +172,7 @@ int Joysticks(void){
 			}
 		}
 	//}
-
+#endif
 	return JS;
 }
 
@@ -198,7 +207,14 @@ BOOL checkNeedDrawUpdate(){
    while(1){
      if(needDrawUpdateFlag == TRUE){
        nowDrawingFlag = TRUE;
-	   sprite.pushSprite(0,0);
+#ifdef XIAO_GC9107
+	sprite.pushRotateZoomWithAA(83,60,0,0.39,0.39);
+#elif defined XIAO_ST7789
+	sprite.pushRotateZoomWithAA(150,100,0,0.666,0.666);
+	
+#else
+	sprite.pushSprite(0,0);
+#endif
        nowDrawingFlag = FALSE;
        needDrawUpdateFlag = FALSE;
      }

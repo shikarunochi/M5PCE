@@ -29,7 +29,10 @@ extern void  IO_write(word_s A,byte V);
 #include "Tables.h"
 #endif
 #include <stdio.h>
+#ifdef ARDUINO_XIAO_ESP32S3
+#else
 #include <M5Stack.h>
+#endif
 #include "M5Pce.h"
 /** INLINE ***************************************************/
 /** Different compilers inline C functions differently.     **/
@@ -357,7 +360,7 @@ void Reset6502(M6502 *R)
   _PC.B.l=Op6502(VEC_RESET);
 
   _PC.B.h=Op6502(VEC_RESET+1);   
-  Serial.printf("%x:%x:%x:%x : StartPC = %x \n", VEC_RESET>>13, VEC_RESET, Page[VEC_RESET>>13][VEC_RESET], Page[(VEC_RESET+1)>>13][VEC_RESET+1],_PC);
+  //Serial.printf("%x:%x:%x:%x : StartPC = %x \n", VEC_RESET>>13, VEC_RESET, Page[VEC_RESET>>13][VEC_RESET], Page[(VEC_RESET+1)>>13][VEC_RESET+1],_PC);
   _ICount=_IPeriod;
   _IRequest=INT_NONE;
   _AfterCLI=0;
@@ -513,7 +516,7 @@ word_s Run6502(M6502 *R)
 //    _ICount-=Cycles[I];
 	cycle = Cycles[I];
 
-  //Serial.printf("[PC:%x] %x \n",(_PC_ -1), I);
+//  Serial.printf("[PC:%x] %x \n",(_PC_ -1), I);
 
     switch(I)
     {

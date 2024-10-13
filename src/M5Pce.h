@@ -2,7 +2,13 @@
 #ifndef M5PCE_H
 #define M5PCE_H
 #include "common.h"
+#ifdef ARDUINO_XIAO_ESP32S3
+#include<Arduino.h>
+#include "FS.h"
+#include <SPIFFS.h>
+#else
 #include <M5Stack.h>
+#endif
 #define TRACE Serial.printf
 #define MAX_FILES 255
 

@@ -1296,7 +1296,11 @@ int CartLoad(char *name)
 {
 	File fp;
 	int fsize;
+#ifdef ARDUINO_XIAO_ESP32S3
+	fp=SPIFFS.open(name,"rb");
+#else
 	fp=SD.open(name,"rb");
+#endif
 	if (fp==NULL) {
 		TRACE("%s not found.\n",name);
 		return -1;
@@ -1474,8 +1478,11 @@ void TrashPCE(char *backmemname)
 		fclose(fp);
 	}
 #endif
+#ifdef ARDUINO_XIAO_ESP32S3
+	fp=SPIFFS.open(backmemname,"wb");
+#else	
 	fp=SD.open(backmemname,"wb");
-
+#endif
 	if (fp != true){
 		//LogDump("Can't open %s\n", backmemname);
 	}

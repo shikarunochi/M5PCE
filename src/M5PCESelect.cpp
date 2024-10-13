@@ -1,5 +1,9 @@
 //    PC Engine emulator M5PCE for M5Stack by @shikarunochi 2021.12-
+#ifdef ARDUINO_XIAO_ESP32S3
+#include<Arduino.h>
+#else
 #include <M5Stack.h>
+#endif
 #include "M5Pce.h"
 
 //https://github.com/tobozo/M5Stack-SD-Updater/blob/master/examples/M5Stack-SD-Menu/M5Stack-SD-Menu.ino
@@ -25,6 +29,13 @@ void sortList(String fileList[], int fileListCount) {
 }
 
 String pceSelect(){
+#ifdef XIAO_GC9107
+return "/pceROM/R-TYPE.pce";
+//return "/pceROM/Columns.pce";
+#elif defined XIAO_ST7789
+//return "/pceROM/After Burner II.pce";
+return "/pceROM/R-TYPE.pce";
+#else
   M5.Lcd.fillScreen(BLACK);
   M5.Lcd.setCursor(0, 0);
   M5.Lcd.setTextSize(2);
@@ -185,4 +196,5 @@ String pceSelect(){
     }
     delay(100);
   }
+#endif
 }
